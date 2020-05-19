@@ -1,0 +1,57 @@
+version: 2.1
+
+description: >
+  This is an orb for testing out the nodeshift projects
+  with different Node.js distributions.
+
+display:
+  # source_url: https://TODO
+  home_url: https://nodeshift.dev
+
+# These are the commands to run for each job
+commands:
+  test-nodejs:
+    steps:
+      - run:
+          name: 'Output Node Version'
+          command: 'node -v'
+
+      - checkout
+
+      # install with npm ci to make sure package.json and lock are N'Sync
+      # No need to cache node_modules since npm ci will delete it
+      - run: npm ci
+
+      # run tests!
+      - run: npm run ci
+# All the Node Jobs to run
+jobs:
+  node10:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - test-nodejs
+
+  node12:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - test-nodejs
+
+  node14:
+    docker:
+      - image: circleci/node:14
+    steps:
+      - test-nodejs
+
+  node10-ubi8-redhat:
+    docker:
+      - image: registry.access.redhat.com/ubi8/nodejs-10
+    steps:
+      - test-nodejs
+
+  node12-ubi8-redhat:
+    docker:
+      - image: registry.access.redhat.com/ubi8/nodejs-12
+    steps:
+      - test-nodejs
